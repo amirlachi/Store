@@ -3,16 +3,11 @@ using Store.Common.Dto;
 
 namespace Store.Application.Services.Commands.UserStatusChange
 {
-    public class UserStatusChangeService : IUserStatusChangeService
+    public class UserStatusChangeService(IDataBaseContext context) : IUserStatusChangeService
     {
-        private IDataBaseContext _context;
-        public UserStatusChangeService(IDataBaseContext context)
-        {
-            _context = context;
-        }
         public ResultDto Execute(long UserId)
         {
-            var user = _context.Users.Find(UserId);
+            var user = context.Users.Find(UserId);
             if (user == null)
             {
                 return new ResultDto
@@ -23,7 +18,7 @@ namespace Store.Application.Services.Commands.UserStatusChange
             }
 
             user.IsActive = !user.IsActive;
-            _context.SaveChanges();
+            context.SaveChanges();
 
             string userState = user.IsActive == true ? "فعال" : "غیرفعال";
             return new ResultDto()

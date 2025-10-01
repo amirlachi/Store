@@ -9,7 +9,7 @@ using Store.Application.Services.Queries.GetRoles;
 using Store.Application.Services.Queries.GetUsers;
 using Store.Application.Services.Users.Commands.UserLogin;
 using Store.Persistence.Contexts;
-using System;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +39,9 @@ builder.Services.AddDbContext<DataBaseContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddControllersWithViews();
 builder.Services.AddAuthorization();
+
+builder.Services.AddValidatorsFromAssemblyContaining<RequestRegisterUserDtoValidator>();
+
 
 var app = builder.Build();
 

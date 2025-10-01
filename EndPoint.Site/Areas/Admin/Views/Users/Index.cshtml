@@ -52,12 +52,12 @@
                                                             <button class="btn btn-danger" onclick="DeleteUser('@item.Id')">حذف</button>
                                                             @if (item.IsActive)
                                                             {
-                                                                <button class="btn btn-warning" onclick="UserSatusChange('@item.Id')">غیر فعال</button>
+                                                                <button class="btn btn-warning" onclick="UserStatus('@item.Id')">غیر فعال</button>
 
                                                             }
                                                             else
                                                             {
-                                                                <button class="btn btn-info" onclick="UserSatusChange('@item.Id')">فعال کردن کاربر  </button>
+                                                                <button class="btn btn-info" onclick="UserStatus('@item.Id')">فعال کردن کاربر  </button>
                                                             }
                                                         </td>
                                                     </tr>
@@ -139,7 +139,7 @@
         }
 
 
-        function UserSatusChange(UserId) {
+        function UserStatus(UserId) {
             swal.fire({
                 title: 'تغییر وضعیت کاربر',
                 text: "کاربر گرامی از تغییر وضعیت کاربر مطمئن هستید؟",
@@ -160,7 +160,7 @@
                         contentType: 'application/x-www-form-urlencoded',
                         dataType: 'json',
                         type: "POST",
-                        url: "UserSatusChange",
+                        url: "UserStatusChange",
                         data: postData,
                         success: function (data) {
                             if (data.isSuccess == true) {

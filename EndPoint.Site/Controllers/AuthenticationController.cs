@@ -11,18 +11,8 @@ using System.Text.RegularExpressions;
 
 namespace EndPoint.Site.Controllers
 {
-    public class AuthenticationController : Controller
+    public class AuthenticationController(IRegisterUserService registerUserService, IUserLoginService userLoginService) : Controller
     {
-
-        private readonly IRegisterUserService _registerUserService;
-        private readonly IUserLoginService _userLoginService;
-
-        public AuthenticationController(IRegisterUserService registerUserService, IUserLoginService userLoginService)
-        {
-            _registerUserService = registerUserService;
-            _userLoginService = userLoginService;
-        }
-
         [HttpGet]
         public IActionResult Signup()
         {
@@ -30,70 +20,64 @@ namespace EndPoint.Site.Controllers
         }
 
         [HttpPost]
-        public IActionResult Signup(SignupViewModel request)
+        public IActionResult Signup(RequestRegisterUserDto request)
         {
-            if (string.IsNullOrWhiteSpace(request.FullName) ||
-                string.IsNullOrWhiteSpace(request.Email) ||
-                string.IsNullOrWhiteSpace(request.Password) ||
-                string.IsNullOrWhiteSpace(request.RePassword))
+            if (!ModelState.IsValid)
             {
-                return Json(new ResultDto { IsSuccess = false, Message = "لطفا تمامی موارد رو ارسال نمایید" });
+                var errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+
+                return Json(new ResultDto
+                {
+                    IsSuccess = false,
+                    Message = string.Join(" | ", errors)
+                });
             }
 
-            if (User.Identity!.IsAuthenticated == true)
+            if (User.Identity!.IsAuthenticated)
             {
-                return Json(new ResultDto { IsSuccess = false, Message = "شما به حساب کاربری خود وارد شده اید! و در حال حاضر نمیتوانید ثبت نام مجدد نمایید" });
-            }
-            if (request.Password != request.RePassword)
-            {
-                return Json(new ResultDto { IsSuccess = false, Message = "رمز عبور و تکرار آن برابر نیست" });
-            }
-            if (request.Password.Length < 8)
-            {
-                return Json(new ResultDto { IsSuccess = false, Message = "رمز عبور باید حداقل 8 کاراکتر باشد" });
+                return Json(new ResultDto
+                {
+                    IsSuccess = false,
+                    Message = "شما وارد حساب کاربری خود شده‌اید و نمی‌توانید دوباره ثبت‌نام کنید"
+                });
             }
 
-            string emailRegex = @"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Z0-9.-]+\.[A-Z]{2,}$";
-
-            var match = Regex.Match(request.Email, emailRegex, RegexOptions.IgnoreCase);
-            if (!match.Success)
-            {
-                return Json(new ResultDto { IsSuccess = true, Message = "ایمیل خودرا به درستی وارد نمایید" });
-            }
-
-
-            var signupResult = _registerUserService.Execute(new RequestRegisterUserDto
+            var signupResult = registerUserService.Execute(new RequestRegisterUserDto
             {
                 Email = request.Email,
                 FullName = request.FullName,
                 Password = request.Password,
                 RePassword = request.RePassword,
-                roles = new List<RolesInRegisterUserDto>()
-                {
-                     new RolesInRegisterUserDto { Id = 3},
-                }
+                roles = new List<RolesInRegisterUserDto>
+        {
+            new RolesInRegisterUserDto { Id = 3 }
+        }
             });
 
-            if (signupResult.IsSuccess == true)
+            if (signupResult.IsSuccess)
             {
-                var claims = new List<Claim>()
-            {
-                new Claim(ClaimTypes.NameIdentifier,signupResult.Data.UserId.ToString()),
-                new Claim(ClaimTypes.Email, request.Email),
-                new Claim(ClaimTypes.Name, request.FullName),
-                new Claim(ClaimTypes.Role, "Customer"),
-            };
-
+                var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, signupResult.Data.UserId.ToString()),
+            new Claim(ClaimTypes.Email, request.Email!),
+            new Claim(ClaimTypes.Name, request.FullName!),
+            new Claim(ClaimTypes.Role, "Customer"),
+        };
 
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var principal = new ClaimsPrincipal(identity);
-                var properties = new AuthenticationProperties()
+
+                var properties = new AuthenticationProperties
                 {
                     IsPersistent = true
                 };
-                HttpContext.SignInAsync(principal, properties);
 
+                HttpContext.SignInAsync(principal, properties);
             }
+
             return Json(signupResult);
         }
 
@@ -107,7 +91,7 @@ namespace EndPoint.Site.Controllers
         [HttpPost]
         public IActionResult Signin(string Email, string Password, string url = "/")
         {
-            var signupResult = _userLoginService.Execute(Email, Password);
+            var signupResult = userLoginService.Execute(Email, Password);
             if (signupResult.IsSuccess == true)
             {
                 var claims = new List<Claim>()
