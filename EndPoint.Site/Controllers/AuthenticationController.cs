@@ -40,7 +40,7 @@ namespace EndPoint.Site.Controllers
                 return Json(new ResultDto { IsSuccess = false, Message = "لطفا تمامی موارد رو ارسال نمایید" });
             }
 
-            if (User.Identity.IsAuthenticated == true)
+            if (User.Identity!.IsAuthenticated == true)
             {
                 return Json(new ResultDto { IsSuccess = false, Message = "شما به حساب کاربری خود وارد شده اید! و در حال حاضر نمیتوانید ثبت نام مجدد نمایید" });
             }
@@ -131,7 +131,7 @@ namespace EndPoint.Site.Controllers
         }
 
 
-        public IActionResult SignOut()
+        public new IActionResult SignOut()
         {
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 

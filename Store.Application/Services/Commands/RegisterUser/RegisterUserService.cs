@@ -6,14 +6,8 @@ using System.Text.RegularExpressions;
 
 namespace Store.Application.Services.Commands.RegisterUser
 {
-    public class RegisterUserService : IRegisterUserService
+    public class RegisterUserService(IDataBaseContext context) : IRegisterUserService
     {
-        private readonly IDataBaseContext _context;
-        public RegisterUserService(IDataBaseContext context)
-        {
-            _context = context;
-        }
-
         public ResultDto<ResultRegisterUserDto>  Execute(RequestRegisterUserDto request)
         {
             try
@@ -95,21 +89,21 @@ namespace Store.Application.Services.Commands.RegisterUser
                 };
 
                 List<UserInRole> userInRoles = new List<UserInRole>();
-                foreach (var item in request.roles)
+                foreach (var item in request.roles!)
                 {
-                    var roles = _context.Roles.Find(item.Id);
+                    var roles = context.Roles.Find(item.Id);
                     userInRoles.Add(new UserInRole
                     {
-                        Role = roles,
-                        RoleId = roles.Id,
+                        Role = roles!,
+                        RoleId = roles!.Id,
                         User = user,
                         UserId = user.Id,
                     });
                 }
                 user.UserInRoles = userInRoles;
 
-                _context.Users.Add(user);
-                _context.SaveChanges();
+                context.Users.Add(user);
+                context.SaveChanges();
                 return new ResultDto<ResultRegisterUserDto>()
                 {
                     Data = new ResultRegisterUserDto()
