@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Store.Application.Services.Commands.EditUser;
-using Store.Application.Services.Commands.RegisterUser;
-using Store.Application.Services.Commands.RemoveUser;
-using Store.Application.Services.Commands.UserStatusChange;
-using Store.Application.Services.Queries.GetRoles;
-using Store.Application.Services.Queries.GetUsers;
+using Store.Application.Services.Users.Commands.EditUser;
+using Store.Application.Services.Users.Commands.RegisterUser;
+using Store.Application.Services.Users.Commands.RemoveUser;
+using Store.Application.Services.Users.Commands.UserStatusChange;
+using Store.Application.Services.Users.Queries.GetRoles;
+using Store.Application.Services.Users.Queries.GetUsers;
 using Store.Common.Dto;
 using static Store.Application.Services.Queries.GetUsers.GetUsersService;
 

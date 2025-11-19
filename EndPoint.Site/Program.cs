@@ -1,15 +1,18 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Store.Application.Interfaces.Contexts;
-using Store.Application.Services.Commands.EditUser;
-using Store.Application.Services.Commands.RegisterUser;
-using Store.Application.Services.Commands.RemoveUser;
-using Store.Application.Services.Commands.UserStatusChange;
-using Store.Application.Services.Queries.GetRoles;
 using Store.Application.Services.Queries.GetUsers;
 using Store.Application.Services.Users.Commands.UserLogin;
 using Store.Persistence.Contexts;
 using FluentValidation;
+using Store.Application.Services.Users.Queries.GetRoles;
+using Store.Application.Services.Users.Queries.GetUsers;
+using Store.Application.Services.Users.Commands.EditUser;
+using Store.Application.Services.Users.Commands.RegisterUser;
+using Store.Application.Services.Users.Commands.RemoveUser;
+using Store.Application.Services.Users.Commands.UserStatusChange;
+using Store.Application.Interfaces.FacadPatterns;
+using Store.Application.Services.Products.FacadPattern;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +37,9 @@ builder.Services.AddScoped<IRemoveUserService, RemoveUserService>();
 builder.Services.AddScoped<IUserStatusChangeService, UserStatusChangeService>();
 builder.Services.AddScoped<IEditUserService, EditUserService>();
 builder.Services.AddScoped<IUserLoginService, UserLoginService>();
+
+// Facad Inject
+builder.Services.AddScoped<IProductFacad, ProductFacad>();
 
 builder.Services.AddDbContext<DataBaseContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

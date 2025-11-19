@@ -3,7 +3,7 @@ using EndPoint.Site.Models.ViewModels.AuthenticationViewModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Store.Application.Services.Commands.RegisterUser;
+using Store.Application.Services.Users.Commands.RegisterUser;
 using Store.Application.Services.Users.Commands.UserLogin;
 using Store.Common.Dto;
 using System.Security.Claims;
@@ -52,20 +52,20 @@ namespace EndPoint.Site.Controllers
                 Password = request.Password,
                 RePassword = request.RePassword,
                 roles = new List<RolesInRegisterUserDto>
-        {
-            new RolesInRegisterUserDto { Id = 3 }
-        }
+                {
+                    new RolesInRegisterUserDto { Id = 3 }
+                }
             });
 
             if (signupResult.IsSuccess)
             {
                 var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, signupResult.Data.UserId.ToString()),
-            new Claim(ClaimTypes.Email, request.Email!),
-            new Claim(ClaimTypes.Name, request.FullName!),
-            new Claim(ClaimTypes.Role, "Customer"),
-        };
+                {
+                    new Claim(ClaimTypes.NameIdentifier, signupResult.Data.UserId.ToString()),
+                    new Claim(ClaimTypes.Email, request.Email!),
+                    new Claim(ClaimTypes.Name, request.FullName!),
+                    new Claim(ClaimTypes.Role, "Customer"),
+                };
 
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var principal = new ClaimsPrincipal(identity);
@@ -95,12 +95,13 @@ namespace EndPoint.Site.Controllers
             if (signupResult.IsSuccess == true)
             {
                 var claims = new List<Claim>()
-            {
-                new Claim(ClaimTypes.NameIdentifier,signupResult.Data.UserId.ToString()),
-                new Claim(ClaimTypes.Email, Email),
-                new Claim(ClaimTypes.Name, signupResult.Data.Name),
-                new Claim(ClaimTypes.Role, signupResult.Data.Roles ),
-            };
+                {
+                    new Claim(ClaimTypes.NameIdentifier,signupResult.Data.UserId.ToString()),
+                    new Claim(ClaimTypes.Email, Email),
+                    new Claim(ClaimTypes.Name, signupResult.Data.Name!),
+                    new Claim(ClaimTypes.Role, signupResult.Data.Roles!),
+                };
+
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var principal = new ClaimsPrincipal(identity);
                 var properties = new AuthenticationProperties()

@@ -1,4 +1,4 @@
-﻿@* @using Store.Application.Services.Products.Queries.GetCategories;
+﻿@using Store.Application.Services.Products.Queries.GetCategories;
 @model List<CategoriesDto>
 @{
     ViewData["Title"] = "Index";
@@ -42,7 +42,7 @@
                                                         <td class="sorting_1">@item.Name</td>
                                                         <td>
                                                             @{
-                                                                string parent = item.Parent != null ? item.Parent.name : "-";
+                                                                string parent = item.Parent != null ? item.Parent.Name : "-";
                                                         }
 
                                                         <text> @parent </text>
@@ -73,4 +73,3 @@
         </section>
     </div>
 </div>
- *@
