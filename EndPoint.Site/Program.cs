@@ -13,6 +13,7 @@ using Store.Application.Services.Users.Commands.RemoveUser;
 using Store.Application.Services.Users.Commands.UserStatusChange;
 using Store.Application.Interfaces.FacadPatterns;
 using Store.Application.Services.Products.FacadPattern;
+using Store.Application.Services.Common.Queries.GetMenuItem;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +41,9 @@ builder.Services.AddScoped<IUserLoginService, UserLoginService>();
 
 // Facad Inject
 builder.Services.AddScoped<IProductFacad, ProductFacad>();
+
+// ------------
+builder.Services.AddScoped<IGetMenuItemService, GetMenuItemService>();
 
 builder.Services.AddDbContext<DataBaseContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

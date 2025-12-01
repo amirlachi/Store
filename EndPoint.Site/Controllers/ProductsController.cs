@@ -12,9 +12,14 @@ namespace EndPoint.Site.Controllers
             _productFacad = productFacad;
         }
 
-        public IActionResult Index(int Page = 1)
+        public IActionResult Index(long? CategoryId = null, int Page = 1)
         {
-            return View(_productFacad.GetProductForSiteService.Execute(Page).Data);
+            return View(_productFacad.GetProductForSiteService.Execute(CategoryId, Page).Data);
+        }
+
+        public IActionResult Detail(long Id)
+        {
+            return View(_productFacad.GetProductDetailForSiteService.Execute(Id).Data);
         }
     }
 }

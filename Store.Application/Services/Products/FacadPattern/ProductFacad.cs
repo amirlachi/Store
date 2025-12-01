@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Store.Application.Services.Products.Queries.GetProductDetailForSite;
 
 namespace Store.Application.Services.Products.FacadPattern
 {
@@ -88,6 +89,15 @@ namespace Store.Application.Services.Products.FacadPattern
             get
             {
                 return _getProductForSite = _getProductForSite ?? new GetProductForSiteService(_context);
+            }
+        }
+
+        private IGetProductDetailForSiteService _getProductDetailForSite;
+        public IGetProductDetailForSiteService GetProductDetailForSiteService
+        {
+            get
+            {
+                return _getProductDetailForSite = _getProductDetailForSite ?? new GetProductDetailForSiteService(_context);
             }
         }
     }

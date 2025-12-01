@@ -13,7 +13,7 @@ namespace Store.Application.Services.Products.Queries.GetProductForSite
 {
     public interface IGetProductForSiteService
     {
-        ResultDto<ResultProductForSiteDto> Execute(int Page);
+        ResultDto<ResultProductForSiteDto> Execute(long? CategoryId,int Page);
     }
 
     public class GetProductForSiteService : IGetProductForSiteService
@@ -25,12 +25,18 @@ namespace Store.Application.Services.Products.Queries.GetProductForSite
             _context = context;
         }
 
-        public ResultDto<ResultProductForSiteDto> Execute(int Page)
+        public ResultDto<ResultProductForSiteDto> Execute(long? CategoryId, int Page)
         {
             int totalRow = 0;
-            var products = _context.Products
-                .Include(p => p.ProductImages)
-                .ToPaged(Page, 5, out totalRow);
+            var productQuery = _context.Products
+                .Include(p => p.ProductImages).AsQueryable();
+
+            if (CategoryId != null)
+            {
+                productQuery = productQuery.Where(p => p.CategoryId == CategoryId).AsQueryable();
+            }
+
+            var product = productQuery.ToPaged(Page, 5, out totalRow);
 
             Random random = new Random();
             return new ResultDto<ResultProductForSiteDto>
@@ -38,7 +44,7 @@ namespace Store.Application.Services.Products.Queries.GetProductForSite
                 Data = new ResultProductForSiteDto
                 {
                     TotalRow = totalRow,
-                    Products = products.Select(p => new ProductForSiteDto
+                    Products = product.Select(p => new ProductForSiteDto
                     {
                         Id = p.Id,
                         Star = random.Next(1, 5),

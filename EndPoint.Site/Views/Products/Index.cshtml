@@ -1,8 +1,13 @@
-﻿@using Store.Application.Services.Products.Queries.GetProductForSite;
+﻿@addTagHelper *, LazZiya.TagHelpers
+@using Store.Application.Services.Products.Queries.GetProductForSite;
 @model ResultProductForSiteDto;
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    int pageNumber = 1;
+    int pageSize = 20;
+    int.TryParse(Context.Request.Query["page"], out pageNumber);
+    int.TryParse(Context.Request.Query["pageSize"], out pageSize);
 }
 
 <div class="col-lg-12 col-md-12 col-xs-12 pl">
@@ -47,7 +52,7 @@
                             <div class="col-lg-3 col-md-3 col-xs-12 order-1 d-block mb-3">
                                 <section class="product-box product product-type-simple">
                                     <div class="thumb">
-                                        <a href="#" class="d-block">
+                                        <a href="~/products/detail/@item.Id" class="d-block">
 
                                             <div class="product-rate">
 
