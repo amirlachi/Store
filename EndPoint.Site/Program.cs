@@ -1,21 +1,23 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Store.Application.Interfaces.Contexts;
+using Store.Application.Interfaces.FacadPatterns;
+using Store.Application.Services.Common.Queries.GetCategory;
+using Store.Application.Services.Common.Queries.GetMenuItem;
+using Store.Application.Services.Common.Queries.GetSlider;
+using Store.Application.Services.HomePage.AddNewSlider;
+using Store.Application.Services.Products.FacadPattern;
+using Store.Application.Services.Products.Queries.GetCategories;
 using Store.Application.Services.Queries.GetUsers;
-using Store.Application.Services.Users.Commands.UserLogin;
-using Store.Persistence.Contexts;
-using FluentValidation;
-using Store.Application.Services.Users.Queries.GetRoles;
-using Store.Application.Services.Users.Queries.GetUsers;
 using Store.Application.Services.Users.Commands.EditUser;
 using Store.Application.Services.Users.Commands.RegisterUser;
 using Store.Application.Services.Users.Commands.RemoveUser;
+using Store.Application.Services.Users.Commands.UserLogin;
 using Store.Application.Services.Users.Commands.UserStatusChange;
-using Store.Application.Interfaces.FacadPatterns;
-using Store.Application.Services.Products.FacadPattern;
-using Store.Application.Services.Common.Queries.GetMenuItem;
-using Store.Application.Services.Products.Queries.GetCategories;
-using Store.Application.Services.Common.Queries.GetCategory;
+using Store.Application.Services.Users.Queries.GetRoles;
+using Store.Application.Services.Users.Queries.GetUsers;
+using Store.Persistence.Contexts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +49,8 @@ builder.Services.AddScoped<IProductFacad, ProductFacad>();
 // ------------
 builder.Services.AddScoped<IGetMenuItemService, GetMenuItemService>();
 builder.Services.AddScoped<IGetCategoryService, GetCategoryService>();
+builder.Services.AddScoped<IAddNewSliderService, AddNewSliderService>();
+builder.Services.AddScoped<IGetSliderService, GetSliderService>();
 
 builder.Services.AddDbContext<DataBaseContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Store.Application.Interfaces.Contexts;
 using Store.Common.Roles;
+using Store.Domain.Entities.HomePage;
 using Store.Domain.Entities.Products;
 using Store.Domain.Entities.Users;
 using System;
@@ -23,6 +24,7 @@ namespace Store.Persistence.Contexts
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductImages> ProductImages { get; set; }
         public DbSet<ProductFeatures> ProductFeatures { get; set; }
+        public DbSet<Slider> Sliders { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
             SeedData(modelBuilder);
@@ -40,6 +42,7 @@ namespace Store.Persistence.Contexts
             modelBuilder.Entity<Product>().HasQueryFilter(p => !p.IsRemoved);
             modelBuilder.Entity<ProductImages>().HasQueryFilter(p => !p.IsRemoved);
             modelBuilder.Entity<ProductFeatures>().HasQueryFilter(p => !p.IsRemoved);
+            modelBuilder.Entity<Slider>().HasQueryFilter(p => !p.IsRemoved);
         }
 
         private void SeedData(ModelBuilder modelBuilder)

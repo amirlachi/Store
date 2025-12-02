@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Store.Domain.Entities.HomePage;
 using Store.Domain.Entities.Products;
 using Store.Domain.Entities.Users;
 using System;
@@ -18,6 +19,7 @@ namespace Store.Application.Interfaces.Contexts
         DbSet<Product> Products { get; set; }
         DbSet<ProductImages> ProductImages { get; set; }
         DbSet<ProductFeatures> ProductFeatures { get; set; }
+        DbSet<Slider> Sliders { get; set; }
         int SaveChanges(bool acceptAllChangesOnSuccess);
         int SaveChanges();
         Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken());
