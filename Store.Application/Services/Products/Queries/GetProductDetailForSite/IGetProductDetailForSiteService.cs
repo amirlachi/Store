@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Store.Application.Interfaces.Contexts;
 using Store.Common.Dto;
+using Store.Domain.Entities.Products;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,9 @@ namespace Store.Application.Services.Products.Queries.GetProductDetailForSite
             {
                 throw new Exception("Product not found!");
             }
+
+            product.ViewCount++;
+            _context.SaveChanges();
 
             return new ResultDto<ProductDetailForSiteDto>()
             {

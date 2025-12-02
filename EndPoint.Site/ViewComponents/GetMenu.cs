@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Store.Application.Services.Common.Queries.GetMenuItem;
 
-namespace EndPoint.Site.ViewComponents.GetMenu
+namespace EndPoint.Site.ViewComponents
 {
     public class GetMenu : ViewComponent
     {

@@ -13,7 +13,36 @@ namespace Store.Application.Services.Products.Queries.GetProductForSite
 {
     public interface IGetProductForSiteService
     {
-        ResultDto<ResultProductForSiteDto> Execute(long? CategoryId,int Page);
+        ResultDto<ResultProductForSiteDto> Execute(Ordering ordering,string SearchKey,long? CategoryId,int Page, int PageSize);
+    }
+
+    public enum Ordering
+    {
+        NotOrder = 0,
+        /// <summary>
+        /// پربازدیدترین
+        /// </summary>
+        MostVisited = 1,
+        /// <summary>
+        /// پرفروش ترین
+        /// </summary>
+        BestSelling = 2,
+        /// <summary>
+        /// محبوب ترین
+        /// </summary>
+        MostPopular = 3,
+        /// <summary>
+        /// جدیدترین
+        /// </summary>
+        TheNewest = 4,
+        /// <summary>
+        /// ارزان ترین
+        /// </summary>
+        Cheapest = 5,
+        /// <summary>
+        /// گران ترین
+        /// </summary>
+        TheMostExpensive = 6,
     }
 
     public class GetProductForSiteService : IGetProductForSiteService
@@ -25,7 +54,7 @@ namespace Store.Application.Services.Products.Queries.GetProductForSite
             _context = context;
         }
 
-        public ResultDto<ResultProductForSiteDto> Execute(long? CategoryId, int Page)
+        public ResultDto<ResultProductForSiteDto> Execute(Ordering ordering, string SearchKey, long? CategoryId, int Page, int PageSize)
         {
             int totalRow = 0;
             var productQuery = _context.Products
@@ -33,10 +62,47 @@ namespace Store.Application.Services.Products.Queries.GetProductForSite
 
             if (CategoryId != null)
             {
-                productQuery = productQuery.Where(p => p.CategoryId == CategoryId).AsQueryable();
+                productQuery = productQuery.Where(p => p.CategoryId == CategoryId || p.Category.ParentCategoryId == CategoryId).AsQueryable();
             }
 
-            var product = productQuery.ToPaged(Page, 5, out totalRow);
+            if (!string.IsNullOrWhiteSpace(SearchKey))
+            {
+                productQuery = productQuery.Where(p => p.Name.Contains(SearchKey) || p.Brand.Contains(SearchKey));
+            }
+
+            switch (ordering)
+            {
+                case Ordering.NotOrder:
+                    productQuery = productQuery.OrderByDescending(p => p.Id).AsQueryable();
+                    break;
+
+                case Ordering.MostVisited:
+                    productQuery = productQuery.OrderByDescending(p => p.ViewCount).AsQueryable();
+                    break;
+
+                case Ordering.BestSelling:
+                    break;
+
+                case Ordering.MostPopular:
+                    break;
+
+                case Ordering.TheNewest:
+                    productQuery = productQuery.OrderByDescending(p => p.Id).AsQueryable();
+                    break;
+
+                case Ordering.Cheapest:
+                    productQuery = productQuery.OrderBy(p => p.Price).AsQueryable();
+                    break;
+
+                case Ordering.TheMostExpensive:
+                    productQuery = productQuery.OrderByDescending(p => p.Price).AsQueryable();
+                    break;
+
+                default:
+                    break;
+            }
+
+            var product = productQuery.ToPaged(Page, PageSize, out totalRow);
 
             Random random = new Random();
             return new ResultDto<ResultProductForSiteDto>
